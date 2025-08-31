@@ -1,16 +1,15 @@
-
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Smartphone, Trash2, Database, TestTube, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useMetaAudienceNetwork } from '../hooks/useMetaAudienceNetwork';
-import { localStorage } from '../utils/localStorage';
+import { localStorage, AppSettings } from '../utils/localStorage';
 import { toast } from 'sonner';
 
 export const Settings = () => {
   const { status, testBanner, testInterstitial } = useMetaAudienceNetwork();
   const [storageInfo, setStorageInfo] = useState({ seoCount: 0, thumbnailCount: 0, totalSize: 0 });
-  const [settings, setSettings] = useState({ adsEnabled: true, theme: 'dark' as const });
+  const [settings, setSettings] = useState<AppSettings>({ adsEnabled: true, theme: 'dark', version: '1.0.0' });
 
   useEffect(() => {
     loadStorageInfo();
@@ -47,7 +46,7 @@ export const Settings = () => {
     }
   };
 
-  const handleSettingChange = (key: string, value: any) => {
+  const handleSettingChange = (key: keyof AppSettings, value: any) => {
     const newSettings = { ...settings, [key]: value };
     setSettings(newSettings);
     localStorage.saveSettings(newSettings);

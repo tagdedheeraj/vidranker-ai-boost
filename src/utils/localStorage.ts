@@ -1,3 +1,4 @@
+
 import { SEOContent } from '../services/cohereApiService';
 import { GeneratedThumbnail } from '../services/imageGenerationService';
 
@@ -18,7 +19,7 @@ export class LocalStorageService {
   // SEO Content History
   getSEOHistory(): SEOContent[] {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.SEO_HISTORY);
+      const data = window.localStorage.getItem(STORAGE_KEYS.SEO_HISTORY);
       return data ? JSON.parse(data) : [];
     } catch (error) {
       console.error('Failed to load SEO history:', error);
@@ -34,7 +35,7 @@ export class LocalStorageService {
       // Keep only last 50 items
       const trimmed = history.slice(0, 50);
       
-      localStorage.setItem(STORAGE_KEYS.SEO_HISTORY, JSON.stringify(trimmed));
+      window.localStorage.setItem(STORAGE_KEYS.SEO_HISTORY, JSON.stringify(trimmed));
     } catch (error) {
       console.error('Failed to save SEO content:', error);
     }
@@ -44,7 +45,7 @@ export class LocalStorageService {
     try {
       const history = this.getSEOHistory();
       const filtered = history.filter(item => item.timestamp !== timestamp);
-      localStorage.setItem(STORAGE_KEYS.SEO_HISTORY, JSON.stringify(filtered));
+      window.localStorage.setItem(STORAGE_KEYS.SEO_HISTORY, JSON.stringify(filtered));
     } catch (error) {
       console.error('Failed to delete SEO content:', error);
     }
@@ -52,7 +53,7 @@ export class LocalStorageService {
 
   clearSEOHistory(): void {
     try {
-      localStorage.removeItem(STORAGE_KEYS.SEO_HISTORY);
+      window.localStorage.removeItem(STORAGE_KEYS.SEO_HISTORY);
     } catch (error) {
       console.error('Failed to clear SEO history:', error);
     }
@@ -61,7 +62,7 @@ export class LocalStorageService {
   // Thumbnail History
   getThumbnailHistory(): GeneratedThumbnail[] {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.THUMBNAIL_HISTORY);
+      const data = window.localStorage.getItem(STORAGE_KEYS.THUMBNAIL_HISTORY);
       return data ? JSON.parse(data) : [];
     } catch (error) {
       console.error('Failed to load thumbnail history:', error);
@@ -77,7 +78,7 @@ export class LocalStorageService {
       // Keep only last 30 items
       const trimmed = history.slice(0, 30);
       
-      localStorage.setItem(STORAGE_KEYS.THUMBNAIL_HISTORY, JSON.stringify(trimmed));
+      window.localStorage.setItem(STORAGE_KEYS.THUMBNAIL_HISTORY, JSON.stringify(trimmed));
     } catch (error) {
       console.error('Failed to save thumbnail:', error);
     }
@@ -87,7 +88,7 @@ export class LocalStorageService {
     try {
       const history = this.getThumbnailHistory();
       const filtered = history.filter(item => item.id !== id);
-      localStorage.setItem(STORAGE_KEYS.THUMBNAIL_HISTORY, JSON.stringify(filtered));
+      window.localStorage.setItem(STORAGE_KEYS.THUMBNAIL_HISTORY, JSON.stringify(filtered));
     } catch (error) {
       console.error('Failed to delete thumbnail:', error);
     }
@@ -95,7 +96,7 @@ export class LocalStorageService {
 
   clearThumbnailHistory(): void {
     try {
-      localStorage.removeItem(STORAGE_KEYS.THUMBNAIL_HISTORY);
+      window.localStorage.removeItem(STORAGE_KEYS.THUMBNAIL_HISTORY);
     } catch (error) {
       console.error('Failed to clear thumbnail history:', error);
     }
@@ -104,7 +105,7 @@ export class LocalStorageService {
   // App Settings
   getSettings(): AppSettings {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.APP_SETTINGS);
+      const data = window.localStorage.getItem(STORAGE_KEYS.APP_SETTINGS);
       const defaults: AppSettings = {
         adsEnabled: true,
         theme: 'dark',
@@ -126,7 +127,7 @@ export class LocalStorageService {
     try {
       const current = this.getSettings();
       const updated = { ...current, ...settings };
-      localStorage.setItem(STORAGE_KEYS.APP_SETTINGS, JSON.stringify(updated));
+      window.localStorage.setItem(STORAGE_KEYS.APP_SETTINGS, JSON.stringify(updated));
     } catch (error) {
       console.error('Failed to save settings:', error);
     }
@@ -136,7 +137,7 @@ export class LocalStorageService {
   clearAllData(): void {
     try {
       Object.values(STORAGE_KEYS).forEach(key => {
-        localStorage.removeItem(key);
+        window.localStorage.removeItem(key);
       });
     } catch (error) {
       console.error('Failed to clear all data:', error);
@@ -151,7 +152,7 @@ export class LocalStorageService {
       
       let totalSize = 0;
       Object.values(STORAGE_KEYS).forEach(key => {
-        const data = localStorage.getItem(key);
+        const data = window.localStorage.getItem(key);
         if (data) {
           totalSize += new Blob([data]).size;
         }

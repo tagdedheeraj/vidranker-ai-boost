@@ -1,4 +1,3 @@
-
 export interface MetaAudienceNetworkConfig {
   appId: string;
   bannerPlacementId: string;
@@ -10,6 +9,12 @@ export interface AdStatus {
   bannerLoaded: boolean;
   interstitialLoaded: boolean;
   isNative: boolean;
+}
+
+declare global {
+  interface Window {
+    Capacitor?: any;
+  }
 }
 
 export class MetaAudienceNetworkService {
