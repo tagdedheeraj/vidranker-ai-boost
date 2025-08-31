@@ -1,21 +1,40 @@
 
-import { Play, Zap } from 'lucide-react';
+import { Play, Zap, Menu, Bell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export const Header = () => {
   return (
-    <header className="glass-card rounded-none border-l-0 border-r-0 border-t-0 p-4">
-      <div className="flex items-center justify-center space-x-3">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur-lg opacity-75 animate-pulse-glow"></div>
-          <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg">
-            <Play className="h-6 w-6 text-white fill-current" />
+    <header className="header-glass">
+      <div className="flex items-center justify-between">
+        {/* Logo and Brand */}
+        <div className="flex items-center space-x-3">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 rounded-xl blur-lg opacity-75 animate-pulse-glow"></div>
+            <div className="relative bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 p-3 rounded-xl">
+              <Play className="h-6 w-6 text-white fill-current animate-pulse" />
+            </div>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-glow bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              VidRanker
+            </h1>
+            <p className="text-xs text-muted-foreground">AI YouTube Optimizer</p>
           </div>
         </div>
-        <div className="text-center">
-          <h1 className="text-xl font-bold text-glow">VidRanker</h1>
-          <p className="text-xs text-muted-foreground">AI YouTube Optimizer</p>
+
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-2">
+          <Button variant="ghost" size="sm" className="relative">
+            <Bell className="h-5 w-5" />
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full animate-pulse"></span>
+          </Button>
+          
+          <Zap className="h-5 w-5 text-yellow-400 animate-pulse" />
+          
+          <Button variant="ghost" size="sm">
+            <Menu className="h-5 w-5" />
+          </Button>
         </div>
-        <Zap className="h-5 w-5 text-yellow-400 animate-pulse" />
       </div>
     </header>
   );

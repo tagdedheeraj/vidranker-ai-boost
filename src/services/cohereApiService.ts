@@ -1,4 +1,3 @@
-
 const COHERE_API_KEY = "ncULg8P8w61vVciZ1pFoGc4VoQ2yQTzTUS6Lijdx";
 const COHERE_API_URL = "https://api.cohere.ai/v1/generate";
 
@@ -12,8 +11,11 @@ export interface SEOContent {
 }
 
 export class CohereApiService {
-  private async makeRequest(prompt: string, maxTokens: number = 200): Promise<string> {
+  private async makeRequest(prompt: string, maxTokens: number = 150): Promise<string> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
       const response = await fetch(COHERE_API_URL, {
         method: 'POST',
         headers: {
@@ -24,12 +26,15 @@ export class CohereApiService {
           model: 'command',
           prompt: prompt,
           max_tokens: maxTokens,
-          temperature: 0.7,
+          temperature: 0.8,
           k: 0,
           stop_sequences: [],
           return_likelihoods: 'NONE'
-        })
+        }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`Cohere API error: ${response.status}`);
@@ -58,7 +63,7 @@ export class CohereApiService {
     const prompt = `Write a compelling YouTube video description for: "${topic}". Include relevant keywords, call-to-action, and emojis. Keep it between 200-300 words. Only return the description.`;
     
     try {
-      const result = await this.makeRequest(prompt, 400);
+      const result = await this.makeRequest(prompt, 350);
       return result;
     } catch (error) {
       return this.getFallbackDescription(topic);
@@ -69,7 +74,7 @@ export class CohereApiService {
     const prompt = `Generate 15 relevant YouTube tags for the video topic: "${topic}". Return only the tags separated by commas, no numbering or extra text.`;
     
     try {
-      const result = await this.makeRequest(prompt, 200);
+      const result = await this.makeRequest(prompt, 150);
       return result.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0).slice(0, 15);
     } catch (error) {
       return this.getFallbackTags(topic);
@@ -80,7 +85,7 @@ export class CohereApiService {
     const prompt = `Generate 10 trending hashtags for YouTube video about: "${topic}". Return only hashtags with # symbol, separated by commas.`;
     
     try {
-      const result = await this.makeRequest(prompt, 150);
+      const result = await this.makeRequest(prompt, 100);
       return result.split(',').map(tag => tag.trim().replace(/^#?/, '#')).filter(tag => tag.length > 1).slice(0, 10);
     } catch (error) {
       return this.getFallbackHashtags(topic);
@@ -88,15 +93,21 @@ export class CohereApiService {
   }
 
   async generateCompleteSEO(topic: string): Promise<SEOContent> {
-    console.log('Generating SEO content for:', topic);
+    console.log('🚀 Generating SEO content for:', topic);
     
     try {
-      const [title, description, tags, hashtags] = await Promise.all([
+      // Use Promise.allSettled for better error handling and faster parallel execution
+      const results = await Promise.allSettled([
         this.generateSEOTitle(topic),
         this.generateSEODescription(topic),
         this.generateTags(topic),
         this.generateHashtags(topic)
       ]);
+
+      const title = results[0].status === 'fulfilled' ? results[0].value : this.getFallbackTitle(topic);
+      const description = results[1].status === 'fulfilled' ? results[1].value : this.getFallbackDescription(topic);
+      const tags = results[2].status === 'fulfilled' ? results[2].value : this.getFallbackTags(topic);
+      const hashtags = results[3].status === 'fulfilled' ? results[3].value : this.getFallbackHashtags(topic);
 
       return {
         title,

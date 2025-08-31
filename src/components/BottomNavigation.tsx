@@ -15,8 +15,8 @@ export const BottomNavigation = () => {
   const location = useLocation();
 
   return (
-    <nav className="glass-card rounded-none border-l-0 border-r-0 border-b-0 p-2">
-      <div className="flex justify-around items-center">
+    <nav className="bottom-nav-glass">
+      <div className="flex justify-around items-center max-w-md mx-auto">
         {navItems.map(({ path, icon: Icon, label }) => {
           const isActive = location.pathname === path;
           
@@ -24,10 +24,18 @@ export const BottomNavigation = () => {
             <button
               key={path}
               onClick={() => navigate(path)}
-              className={`nav-item ${isActive ? 'active' : ''}`}
+              className={`nav-item group ${isActive ? 'active' : ''}`}
             >
-              <Icon className={`h-5 w-5 mb-1 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
-              <span className={`text-xs ${isActive ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+              <Icon className={`h-5 w-5 mb-1 transition-all duration-300 ${
+                isActive 
+                  ? 'text-primary scale-110' 
+                  : 'text-muted-foreground group-hover:text-primary group-hover:scale-105'
+              }`} />
+              <span className={`text-xs font-medium transition-all duration-300 ${
+                isActive 
+                  ? 'text-primary' 
+                  : 'text-muted-foreground group-hover:text-primary'
+              }`}>
                 {label}
               </span>
             </button>
