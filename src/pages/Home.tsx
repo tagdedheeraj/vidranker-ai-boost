@@ -52,7 +52,7 @@ export const Home = () => {
             </div>
             <h1 className="text-2xl font-bold text-glow mb-2">Welcome to VidRanker</h1>
             <p className="text-muted-foreground">
-              Helps optimize YouTube content with AI-powered tools
+              Helps optimize video content with AI-powered tools
             </p>
           </div>
           
@@ -130,6 +130,16 @@ export const Home = () => {
             <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0"></div>
             <p>Consistent content creation helps with audience engagement</p>
           </div>
+        </div>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="card-glass">
+        <div className="text-xs text-muted-foreground text-center space-y-1">
+          <p>• This app contains advertisements</p>
+          <p>• Some features may require subscription</p>
+          <p>• Results are suggestions, not guarantees</p>
+          <p>• Manage ad preferences in device settings</p>
         </div>
       </div>
     </div>

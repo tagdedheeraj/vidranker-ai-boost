@@ -1,4 +1,3 @@
-
 import { FileText, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -29,12 +28,13 @@ export const TermsOfService = () => {
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">Service Description</h2>
-            <p>VidRanker is an AI-powered tool that helps YouTube content creators optimize their videos through:</p>
+            <p>VidRanker is an AI-powered tool that helps video content creators optimize their content through:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>SEO content generation suggestions (titles, descriptions, tags, hashtags)</li>
               <li>Thumbnail creation and optimization tools</li>
               <li>Content history management</li>
               <li>Advertisement display to support free usage</li>
+              <li>Optional premium features through subscription</li>
             </ul>
           </section>
 
@@ -43,7 +43,7 @@ export const TermsOfService = () => {
             <p>You are responsible for:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>Providing accurate information when using our services</li>
-              <li>Complying with YouTube's Terms of Service and Community Guidelines</li>
+              <li>Complying with platform Terms of Service and Community Guidelines</li>
               <li>Using generated content appropriately, legally, and ethically</li>
               <li>Not using the service for spam, misleading content, or malicious purposes</li>
               <li>Understanding that results are suggestions and not guarantees</li>
@@ -57,7 +57,7 @@ export const TermsOfService = () => {
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">Disclaimer</h2>
-            <p>VidRanker provides suggestions and tools to help with content optimization. We do not guarantee specific results, growth, or performance. Success on YouTube depends on many factors beyond our control.</p>
+            <p>VidRanker provides suggestions and tools to help with content optimization. We do not guarantee specific results, growth, or performance. Success on video platforms depends on many factors beyond our control. All statistics and growth claims are based on aggregated user data and individual results may vary.</p>
           </section>
 
           <section>
@@ -66,8 +66,8 @@ export const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">Advertisements</h2>
-            <p>This app displays advertisements to support free usage. We are not responsible for the content of third-party advertisements.</p>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Advertisements & Subscriptions</h2>
+            <p>This app displays advertisements to support free usage. We are not responsible for the content of third-party advertisements. Some advanced features may require a subscription. Subscription fees are non-refundable except as required by law.</p>
           </section>
 
           <section>

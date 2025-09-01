@@ -20,7 +20,7 @@ export const About = () => {
     {
       icon: Users,
       title: 'Creator Focused',
-      description: 'Designed specifically for YouTube content creators to help organize and optimize their content workflow.'
+      description: 'Designed specifically for video content creators to help organize and optimize their content workflow.'
     }
   ];
 
@@ -42,7 +42,7 @@ export const About = () => {
         <div className="space-y-6">
           <div className="text-center">
             <p className="text-muted-foreground mb-4">
-              VidRanker is an AI-powered YouTube content optimization tool designed to help content creators organize and optimize their video content for better discoverability.
+              VidRanker is an AI-powered video content optimization tool designed to help content creators organize and optimize their video content for better discoverability.
             </p>
           </div>
 
@@ -65,15 +65,20 @@ export const About = () => {
           <div className="glass p-4 rounded-xl text-center">
             <h3 className="font-semibold mb-2">Version 5.0.0</h3>
             <p className="text-sm text-muted-foreground">
-              Built for YouTube creators worldwide
+              Built for video content creators worldwide
             </p>
           </div>
 
           <div className="glass p-4 rounded-xl">
-            <h3 className="font-semibold mb-2">Disclaimer</h3>
-            <p className="text-sm text-muted-foreground">
-              This app contains advertisements. VidRanker uses third-party AI services for content generation. Results may vary and are not guaranteed. Always comply with YouTube's Terms of Service and Community Guidelines.
-            </p>
+            <h3 className="font-semibold mb-2">Important Information</h3>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p>• This app contains advertisements to support free usage</p>
+              <p>• Some advanced features may require a subscription in future updates</p>
+              <p>• VidRanker uses third-party AI services for content generation</p>
+              <p>• Results may vary and are not guaranteed</p>
+              <p>• Users can manage ad preferences through their device settings</p>
+              <p>• Always comply with platform Terms of Service and Community Guidelines</p>
+            </div>
           </div>
         </div>
       </div>

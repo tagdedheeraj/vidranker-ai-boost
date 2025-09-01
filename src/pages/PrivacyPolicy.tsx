@@ -1,4 +1,3 @@
-
 import { Shield, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +23,7 @@ export const PrivacyPolicy = () => {
         <div className="space-y-6 text-sm text-muted-foreground">
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">Data Collection</h2>
-            <p>VidRanker collects minimal data to provide AI-powered YouTube optimization services. We collect:</p>
+            <p>VidRanker collects minimal data to provide AI-powered video content optimization services. We collect:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>Video topics and keywords you input for SEO generation</li>
               <li>Generated content stored locally on your device</li>
@@ -37,7 +36,7 @@ export const PrivacyPolicy = () => {
             <h2 className="text-lg font-semibold text-foreground mb-3">Data Usage</h2>
             <p>Your data is used exclusively to:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
-              <li>Generate AI-powered SEO content suggestions for your YouTube videos</li>
+              <li>Generate AI-powered SEO content suggestions for your video content</li>
               <li>Store your content history locally on your device</li>
               <li>Improve our AI algorithms and services</li>
               <li>Display relevant advertisements through our ad partners</li>
@@ -55,8 +54,13 @@ export const PrivacyPolicy = () => {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">Advertisements</h2>
-            <p>This app displays advertisements to support its free usage. Ad partners may collect data for personalized advertising. You can manage ad preferences through your device settings.</p>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Advertisements & Preferences</h2>
+            <p>This app displays advertisements to support its free usage. Ad partners may collect data for personalized advertising. You can manage ad preferences through your device settings or by contacting us. Users have the right to opt-out of personalized ads.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Subscription Services</h2>
+            <p>Some advanced features may require a subscription. Subscription data is processed securely and users can cancel anytime through their app store account settings.</p>
           </section>
 
           <section>
