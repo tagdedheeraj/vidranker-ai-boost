@@ -10,17 +10,17 @@ export const About = () => {
     {
       icon: Target,
       title: 'AI-Powered SEO',
-      description: 'Generate optimized titles, descriptions, tags, and hashtags using advanced AI technology.'
+      description: 'Generate optimized titles, descriptions, tags, and hashtags using AI technology to help improve content discoverability.'
     },
     {
       icon: Zap,
       title: 'Fast Generation',
-      description: 'Get professional SEO content in seconds with our optimized AI algorithms.'
+      description: 'Get SEO content suggestions quickly with our AI algorithms designed for content creators.'
     },
     {
       icon: Users,
       title: 'Creator Focused',
-      description: 'Built specifically for YouTube content creators to boost their channel growth.'
+      description: 'Designed specifically for YouTube content creators to help organize and optimize their content workflow.'
     }
   ];
 
@@ -42,7 +42,7 @@ export const About = () => {
         <div className="space-y-6">
           <div className="text-center">
             <p className="text-muted-foreground mb-4">
-              VidRanker is the ultimate AI-powered YouTube optimization tool designed to help content creators grow their channels and reach more viewers.
+              VidRanker is an AI-powered YouTube content optimization tool designed to help content creators organize and optimize their video content for better discoverability.
             </p>
           </div>
 
@@ -63,9 +63,16 @@ export const About = () => {
           </div>
 
           <div className="glass p-4 rounded-xl text-center">
-            <h3 className="font-semibold mb-2">Version 1.0.0</h3>
+            <h3 className="font-semibold mb-2">Version 5.0.0</h3>
             <p className="text-sm text-muted-foreground">
-              Built with ❤️ for YouTube creators worldwide
+              Built for YouTube creators worldwide
+            </p>
+          </div>
+
+          <div className="glass p-4 rounded-xl">
+            <h3 className="font-semibold mb-2">Disclaimer</h3>
+            <p className="text-sm text-muted-foreground">
+              This app contains advertisements. VidRanker uses third-party AI services for content generation. Results may vary and are not guaranteed. Always comply with YouTube's Terms of Service and Community Guidelines.
             </p>
           </div>
         </div>

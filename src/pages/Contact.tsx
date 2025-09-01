@@ -54,7 +54,7 @@ export const Contact = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold">Email</h3>
-                  <p className="text-sm text-muted-foreground">support@vidranker.com</p>
+                  <p className="text-sm text-muted-foreground">hello@socilet.com</p>
                 </div>
               </div>
             </div>

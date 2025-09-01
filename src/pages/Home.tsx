@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Play, Zap, TrendingUp, Users, Target } from 'lucide-react';
+import { Play, Zap, TrendingUp, Users, Target, FileText, Image, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { localStorage } from '../utils/localStorage';
 
@@ -52,7 +52,7 @@ export const Home = () => {
             </div>
             <h1 className="text-2xl font-bold text-glow mb-2">Welcome to VidRanker</h1>
             <p className="text-muted-foreground">
-              Boost your YouTube success with AI-powered content optimization
+              Helps optimize YouTube content with AI-powered tools
             </p>
           </div>
           
@@ -73,18 +73,18 @@ export const Home = () => {
       <div className="grid grid-cols-3 gap-3">
         <div className="glass p-3 rounded-lg text-center">
           <TrendingUp className="h-6 w-6 text-green-400 mx-auto mb-1" />
-          <div className="text-lg font-bold">+127%</div>
-          <div className="text-xs text-muted-foreground">Avg Growth</div>
+          <div className="text-lg font-bold">Tools</div>
+          <div className="text-xs text-muted-foreground">AI Powered</div>
         </div>
         <div className="glass p-3 rounded-lg text-center">
           <Users className="h-6 w-6 text-blue-400 mx-auto mb-1" />
-          <div className="text-lg font-bold">50K+</div>
-          <div className="text-xs text-muted-foreground">Creators</div>
+          <div className="text-lg font-bold">Creators</div>
+          <div className="text-xs text-muted-foreground">For Everyone</div>
         </div>
         <div className="glass p-3 rounded-lg text-center">
           <Target className="h-6 w-6 text-purple-400 mx-auto mb-1" />
-          <div className="text-lg font-bold">99.9%</div>
-          <div className="text-xs text-muted-foreground">Success Rate</div>
+          <div className="text-lg font-bold">Easy</div>
+          <div className="text-xs text-muted-foreground">To Use</div>
         </div>
       </div>
 
@@ -115,28 +115,25 @@ export const Home = () => {
       <div className="card-glass">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
           <Target className="h-5 w-5 text-primary" />
-          Pro Tips
+          Content Tips
         </h3>
         <div className="space-y-2 text-sm text-muted-foreground">
           <div className="flex items-start gap-2">
             <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-            <p>Use specific keywords in your SEO titles for better discoverability</p>
+            <p>Use relevant keywords in your SEO titles for better discoverability</p>
           </div>
           <div className="flex items-start gap-2">
             <div className="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0"></div>
-            <p>Test multiple thumbnail variations to find what works best</p>
+            <p>Create engaging thumbnails that represent your content accurately</p>
           </div>
           <div className="flex items-start gap-2">
             <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0"></div>
-            <p>Regular content creation leads to better algorithm performance</p>
+            <p>Consistent content creation helps with audience engagement</p>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-// Missing import fix
-import { FileText, Image, History } from 'lucide-react';
 
 export default Home;

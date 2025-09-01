@@ -123,7 +123,7 @@ export const Settings = () => {
         
         <div className="space-y-3">
           <div className="flex justify-between items-center p-3 glass rounded-lg">
-            <span className="text-sm">Meta Audience Network</span>
+            <span className="text-sm">Ads Service</span>
             <span className={`text-xs px-2 py-1 rounded-full ${
               status.isInitialized ? 'bg-green-500/20 text-green-600' : 'bg-red-500/20 text-red-600'
             }`}>
@@ -133,7 +133,7 @@ export const Settings = () => {
           
           <div className="flex justify-between items-center p-3 glass rounded-lg">
             <span className="text-sm">VidRanker Version</span>
-            <span className="text-xs text-muted-foreground">1.0.0</span>
+            <span className="text-xs text-muted-foreground">5.0.0</span>
           </div>
         </div>
       </div>

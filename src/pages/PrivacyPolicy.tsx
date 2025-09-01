@@ -29,6 +29,7 @@ export const PrivacyPolicy = () => {
               <li>Video topics and keywords you input for SEO generation</li>
               <li>Generated content stored locally on your device</li>
               <li>Anonymous usage analytics to improve our services</li>
+              <li>Ad interaction data as required by our advertising partners</li>
             </ul>
           </section>
 
@@ -36,9 +37,10 @@ export const PrivacyPolicy = () => {
             <h2 className="text-lg font-semibold text-foreground mb-3">Data Usage</h2>
             <p>Your data is used exclusively to:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
-              <li>Generate AI-powered SEO content for your YouTube videos</li>
+              <li>Generate AI-powered SEO content suggestions for your YouTube videos</li>
               <li>Store your content history locally on your device</li>
               <li>Improve our AI algorithms and services</li>
+              <li>Display relevant advertisements through our ad partners</li>
             </ul>
           </section>
 
@@ -49,12 +51,17 @@ export const PrivacyPolicy = () => {
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">Third-Party Services</h2>
-            <p>VidRanker uses Cohere AI for content generation and Meta Audience Network for advertisements. Please review their privacy policies for more information.</p>
+            <p>VidRanker uses Cohere AI for content generation and advertising networks for displaying ads. These services may collect additional data as per their privacy policies. We comply with all applicable privacy laws including COPPA for users under 13.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Advertisements</h2>
+            <p>This app displays advertisements to support its free usage. Ad partners may collect data for personalized advertising. You can manage ad preferences through your device settings.</p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">Contact</h2>
-            <p>For privacy concerns, contact us at: privacy@vidranker.com</p>
+            <p>For privacy concerns, contact us at: hello@socilet.com</p>
           </section>
         </div>
       </div>
