@@ -13,7 +13,7 @@ export const Header = () => {
         <div className="flex items-center space-x-3">
           <div className="relative">
             <img 
-              src="/lovable-uploads/7672fcf0-d213-4199-a45d-2f50ad3a9544.png" 
+              src="/lovable-uploads/dff3395e-9c95-46e0-984b-72aeedc92b95.png" 
               alt="VidRanker Logo" 
               className="h-10 w-10 object-contain"
             />
@@ -22,7 +22,7 @@ export const Header = () => {
             <h1 className="text-xl font-bold text-foreground">
               VidRanker
             </h1>
-            <p className="text-xs text-muted-foreground">AI YouTube Optimizer</p>
+            <p className="text-xs text-muted-foreground">SEO Tags Thumbnail</p>
           </div>
         </div>
 
