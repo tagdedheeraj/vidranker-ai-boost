@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Settings as SettingsIcon, Shield, FileText, Info, Trash2, TestTube, Monitor } from 'lucide-react';
+import { Settings as SettingsIcon, Shield, FileText, Info, Trash2, TestTube, Monitor, HelpCircle, Mail, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMetaAudienceNetwork } from '../hooks/useMetaAudienceNetwork';
 import { localStorage } from '../utils/localStorage';
@@ -14,7 +14,7 @@ interface AppSettings {
 
 export const Settings = () => {
   const navigate = useNavigate();
-  const [settings, setSettings] = useState<AppSettings>({ adsEnabled: true, theme: 'dark' });
+  const [settings, setSettings] = useState<AppSettings>({ adsEnabled: true, theme: 'light' });
   const { showBanner, hideBanner, showInterstitial, status } = useMetaAudienceNetwork();
 
   useEffect(() => {
@@ -60,7 +60,24 @@ export const Settings = () => {
     }
   };
 
-  const settingsItems = [
+  const supportItems = [
+    {
+      icon: HelpCircle,
+      title: 'Help & Support',
+      description: 'Get help with using VidRanker',
+      action: () => navigate('/help'),
+      color: 'from-green-600 to-blue-600'
+    },
+    {
+      icon: Mail,
+      title: 'Contact Us',
+      description: 'Send us a message or feedback',
+      action: () => navigate('/contact'),
+      color: 'from-blue-600 to-purple-600'
+    }
+  ];
+
+  const legalItems = [
     {
       icon: Shield,
       title: 'Privacy Policy',
@@ -108,7 +125,7 @@ export const Settings = () => {
           <div className="flex justify-between items-center p-3 glass rounded-lg">
             <span className="text-sm">Meta Audience Network</span>
             <span className={`text-xs px-2 py-1 rounded-full ${
-              status.isInitialized ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+              status.isInitialized ? 'bg-green-500/20 text-green-600' : 'bg-red-500/20 text-red-600'
             }`}>
               {status.isInitialized ? 'Active' : 'Inactive'}
             </span>
@@ -121,11 +138,55 @@ export const Settings = () => {
         </div>
       </div>
 
-      {/* Ad Testing */}
+      {/* Support & Help */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold">Support & Help</h2>
+        {supportItems.map((item, index) => (
+          <div
+            key={index}
+            onClick={item.action}
+            className="card-glass hover:scale-[1.02] transition-all duration-200 cursor-pointer group"
+          >
+            <div className="flex items-center space-x-4">
+              <div className={`w-12 h-12 bg-gradient-to-r ${item.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
+                <item.icon className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Legal & Information */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold">Legal & Information</h2>
+        {legalItems.map((item, index) => (
+          <div
+            key={index}
+            onClick={item.action}
+            className="card-glass hover:scale-[1.02] transition-all duration-200 cursor-pointer group"
+          >
+            <div className="flex items-center space-x-4">
+              <div className={`w-12 h-12 bg-gradient-to-r ${item.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
+                <item.icon className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Ad Testing (Developer Mode) */}
       <div className="card-glass">
         <h2 className="font-semibold mb-4 flex items-center gap-2">
-          <TestTube className="h-5 w-5 text-secondary" />
-          Ad Testing
+          <TestTube className="h-5 w-5 text-orange-500" />
+          Developer Tools
         </h2>
         
         <div className="grid grid-cols-2 gap-3">
@@ -147,28 +208,6 @@ export const Settings = () => {
             Test Interstitial
           </Button>
         </div>
-      </div>
-
-      {/* Legal & Info Pages */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Legal & Information</h2>
-        {settingsItems.map((item, index) => (
-          <div
-            key={index}
-            onClick={item.action}
-            className="card-glass hover:scale-[1.02] transition-all duration-200 cursor-pointer group"
-          >
-            <div className="flex items-center space-x-4">
-              <div className={`w-12 h-12 bg-gradient-to-r ${item.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                <item.icon className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
-              </div>
-            </div>
-          </div>
-        ))}
       </div>
 
       {/* Data Management */}
