@@ -18,15 +18,18 @@ export const Settings = () => {
   const { showBanner, hideBanner, showInterstitial, status } = useMetaAudienceNetwork();
 
   useEffect(() => {
-    const savedSettings = localStorage.getAppSettings();
+    const savedSettings = localStorage.getSettings();
     if (savedSettings) {
-      setSettings(savedSettings);
+      setSettings({
+        adsEnabled: savedSettings.adsEnabled,
+        theme: savedSettings.theme
+      });
     }
   }, []);
 
   const saveSettings = (newSettings: AppSettings) => {
     setSettings(newSettings);
-    localStorage.saveAppSettings(newSettings);
+    localStorage.saveSettings(newSettings);
     toast.success('Settings saved successfully!');
   };
 
@@ -105,9 +108,9 @@ export const Settings = () => {
           <div className="flex justify-between items-center p-3 glass rounded-lg">
             <span className="text-sm">Meta Audience Network</span>
             <span className={`text-xs px-2 py-1 rounded-full ${
-              status.adsEnabled ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+              status.isInitialized ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
             }`}>
-              {status.adsEnabled ? 'Active' : 'Inactive'}
+              {status.isInitialized ? 'Active' : 'Inactive'}
             </span>
           </div>
           
