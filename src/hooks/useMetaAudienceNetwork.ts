@@ -1,31 +1,66 @@
 
 import { useEffect, useState } from 'react';
-import { metaAudienceNetwork, AdStatus } from '../services/metaAudienceNetworkService';
+import { metaAudienceNetwork } from '@/services/metaAudienceNetworkService';
 
 export const useMetaAudienceNetwork = () => {
-  const [status, setStatus] = useState<AdStatus>(metaAudienceNetwork.getStatus());
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Initialize Meta Audience Network on component mount
-    console.log('🚀 Hook: Initializing Meta Audience Network...');
-    metaAudienceNetwork.initialize();
+    const initialize = async () => {
+      setIsLoading(true);
+      try {
+        await metaAudienceNetwork.initialize();
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('Failed to initialize Meta Audience Network:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // Subscribe to status changes
-    const unsubscribe = metaAudienceNetwork.onStatusChange(setStatus);
-
-    return unsubscribe;
+    initialize();
   }, []);
 
+  const showBannerAd = async (placementId: string) => {
+    try {
+      await metaAudienceNetwork.showBannerAd(placementId);
+    } catch (error) {
+      console.error('Error showing banner ad:', error);
+    }
+  };
+
+  const showInterstitialAd = async (placementId: string) => {
+    try {
+      await metaAudienceNetwork.showInterstitialAd(placementId);
+    } catch (error) {
+      console.error('Error showing interstitial ad:', error);
+    }
+  };
+
+  const loadTestAd = async () => {
+    try {
+      return await metaAudienceNetwork.loadTestAd();
+    } catch (error) {
+      console.error('Error loading test ad:', error);
+      return false;
+    }
+  };
+
+  const hideBannerAd = async () => {
+    try {
+      await metaAudienceNetwork.hideBannerAd();
+    } catch (error) {
+      console.error('Error hiding banner ad:', error);
+    }
+  };
+
   return {
-    status,
-    showInterstitial: metaAudienceNetwork.showInterstitialAd.bind(metaAudienceNetwork),
-    loadInterstitial: metaAudienceNetwork.loadInterstitialAd.bind(metaAudienceNetwork),
-    showBanner: metaAudienceNetwork.showBannerAd.bind(metaAudienceNetwork),
-    hideBanner: metaAudienceNetwork.hideBannerAd.bind(metaAudienceNetwork),
-    testBanner: metaAudienceNetwork.testBannerAd.bind(metaAudienceNetwork),
-    testInterstitial: metaAudienceNetwork.testInterstitialAd.bind(metaAudienceNetwork),
-    refreshAds: metaAudienceNetwork.refreshAds.bind(metaAudienceNetwork),
-    setTestMode: metaAudienceNetwork.setTestMode.bind(metaAudienceNetwork),
-    getDebugInfo: metaAudienceNetwork.getDebugInfo.bind(metaAudienceNetwork)
+    isInitialized,
+    isLoading,
+    showBannerAd,
+    showInterstitialAd,
+    loadTestAd,
+    hideBannerAd
   };
 };

@@ -1,296 +1,89 @@
 
-export interface MetaAudienceNetworkConfig {
-  appId: string;
-  bannerPlacementId: string;
-  interstitialPlacementId: string;
-  testMode: boolean;
-}
+import { FacebookAds } from '@capacitor/facebook-ads';
 
-export interface AdStatus {
-  isInitialized: boolean;
-  bannerLoaded: boolean;
-  interstitialLoaded: boolean;
-  isNative: boolean;
-  testMode: boolean;
-  lastBidRequest: Date | null;
-}
-
-declare global {
-  interface Window {
-    Capacitor?: any;
-    FacebookAds?: any;
-  }
-}
-
-export class MetaAudienceNetworkService {
-  private config: MetaAudienceNetworkConfig = {
-    appId: '1160387479246621',
-    bannerPlacementId: '1160387479246621_1164434622175240',
-    interstitialPlacementId: '1160387479246621_1161152762503426',
-    testMode: true // Enable test mode initially
-  };
-
-  private status: AdStatus = {
-    isInitialized: false,
-    bannerLoaded: false,
-    interstitialLoaded: false,
-    isNative: false,
-    testMode: true,
-    lastBidRequest: null
-  };
-
-  private listeners: ((status: AdStatus) => void)[] = [];
-  private FacebookAds: any = null;
-
-  constructor() {
-    this.detectPlatform();
-  }
-
-  private detectPlatform() {
-    this.status.isNative = window.Capacitor !== undefined;
-    console.log('Platform detected:', this.status.isNative ? 'Native (Capacitor)' : 'Web Browser');
-    
-    if (this.status.isNative && window.FacebookAds) {
-      this.FacebookAds = window.FacebookAds;
-      console.log('Meta Audience Network SDK available');
-    }
-  }
-
-  async initialize(): Promise<boolean> {
-    console.log('🚀 Initializing Meta Audience Network...');
-    console.log('App ID:', this.config.appId);
-    console.log('Test Mode:', this.config.testMode);
-
-    if (!this.status.isNative) {
-      console.log('⚠️ Running in web browser - showing simulated ads for testing');
-      this.status.isInitialized = true;
-      this.status.testMode = true;
-      this.notifyListeners();
-      return true;
-    }
-
+class MetaAudienceNetworkService {
+  private isInitialized = false;
+  
+  async initialize() {
     try {
-      if (!this.FacebookAds) {
-        console.error('❌ Meta Audience Network SDK not found');
-        return false;
-      }
-
-      // Initialize Facebook Ads SDK
-      await this.FacebookAds.initialize({
-        appId: this.config.appId,
-        testMode: this.config.testMode,
-        testDeviceId: 'YOUR_TEST_DEVICE_ID' // Add your test device ID here
+      console.log('Initializing Meta Audience Network...');
+      
+      await FacebookAds.initialize({
+        testMode: true,
+        testDeviceIds: ['YOUR_TEST_DEVICE_ID'],
+        logLevel: 'verbose'
       });
-
-      this.status.isInitialized = true;
-      this.status.testMode = this.config.testMode;
-      this.notifyListeners();
       
-      console.log('✅ Meta Audience Network initialized successfully');
-      
-      // Load test ads automatically
-      await this.loadBannerAd();
-      await this.loadInterstitialAd();
-      
-      return true;
+      this.isInitialized = true;
+      console.log('Meta Audience Network initialized successfully');
     } catch (error) {
-      console.error('❌ Failed to initialize Meta Audience Network:', error);
-      return false;
+      console.error('Failed to initialize Meta Audience Network:', error);
     }
   }
 
-  async loadBannerAd(): Promise<boolean> {
-    console.log('📱 Loading banner ad...');
-    console.log('Placement ID:', this.config.bannerPlacementId);
-    
-    if (!this.status.isInitialized) {
-      console.log('⚠️ SDK not initialized');
-      return false;
+  async showBannerAd(placementId: string) {
+    if (!this.isInitialized) {
+      await this.initialize();
     }
 
     try {
-      this.status.lastBidRequest = new Date();
+      console.log('Showing banner ad with placement ID:', placementId);
       
-      if (this.status.isNative && this.FacebookAds) {
-        // Load real banner ad using Capacitor plugin
-        await this.FacebookAds.loadBannerAd({
-          placementId: this.config.bannerPlacementId,
-          size: 'BANNER_320_50'
-        });
-      } else {
-        // Simulate banner loading for web testing
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
+      await FacebookAds.showBannerAd({
+        placementId: placementId,
+        size: 'BANNER_320_50',
+        position: 'BOTTOM_CENTER'
+      });
       
-      this.status.bannerLoaded = true;
-      this.notifyListeners();
-      
-      console.log('✅ Banner ad loaded successfully');
-      console.log('📊 Bid request sent at:', this.status.lastBidRequest.toLocaleTimeString());
-      return true;
+      console.log('Banner ad displayed successfully');
     } catch (error) {
-      console.error('❌ Failed to load banner ad:', error);
-      return false;
+      console.error('Failed to show banner ad:', error);
     }
   }
 
-  async loadInterstitialAd(): Promise<boolean> {
-    console.log('🎯 Loading interstitial ad...');
-    console.log('Placement ID:', this.config.interstitialPlacementId);
-    
-    if (!this.status.isInitialized) {
-      console.log('⚠️ SDK not initialized');
-      return false;
+  async showInterstitialAd(placementId: string) {
+    if (!this.isInitialized) {
+      await this.initialize();
     }
 
     try {
-      this.status.lastBidRequest = new Date();
+      console.log('Loading interstitial ad with placement ID:', placementId);
       
-      if (this.status.isNative && this.FacebookAds) {
-        // Load real interstitial ad using Capacitor plugin
-        await this.FacebookAds.loadInterstitialAd({
-          placementId: this.config.interstitialPlacementId
-        });
-      } else {
-        // Simulate interstitial loading for web testing
-        await new Promise(resolve => setTimeout(resolve, 1500));
-      }
+      await FacebookAds.loadInterstitialAd({
+        placementId: placementId
+      });
       
-      this.status.interstitialLoaded = true;
-      this.notifyListeners();
-      
-      console.log('✅ Interstitial ad loaded successfully');
-      console.log('📊 Bid request sent at:', this.status.lastBidRequest.toLocaleTimeString());
-      return true;
+      await FacebookAds.showInterstitialAd();
+      console.log('Interstitial ad displayed successfully');
     } catch (error) {
-      console.error('❌ Failed to load interstitial ad:', error);
-      return false;
+      console.error('Failed to show interstitial ad:', error);
     }
   }
 
-  async showInterstitialAd(): Promise<boolean> {
-    if (!this.status.interstitialLoaded) {
-      console.log('⚠️ Interstitial ad not loaded - loading now...');
-      const loaded = await this.loadInterstitialAd();
-      if (!loaded) return false;
-    }
-
+  async loadTestAd() {
     try {
-      console.log('🎬 Showing interstitial ad...');
+      console.log('Loading test ad...');
       
-      if (this.status.isNative && this.FacebookAds) {
-        await this.FacebookAds.showInterstitialAd();
-      } else {
-        // Simulate showing ad for web testing
-        console.log('🎭 [SIMULATION] Interstitial ad would show here');
-        await new Promise(resolve => setTimeout(resolve, 3000));
-      }
+      // Using Facebook's test placement ID
+      const testPlacementId = 'IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID';
       
-      this.status.interstitialLoaded = false;
-      this.notifyListeners();
-      
-      console.log('✅ Interstitial ad completed');
-      
-      // Preload next interstitial
-      setTimeout(() => this.loadInterstitialAd(), 1000);
+      await this.showBannerAd(testPlacementId);
+      console.log('Test ad loaded successfully');
       
       return true;
     } catch (error) {
-      console.error('❌ Failed to show interstitial ad:', error);
+      console.error('Failed to load test ad:', error);
       return false;
     }
   }
 
-  showBannerAd(): void {
-    if (!this.status.bannerLoaded) {
-      console.log('⚠️ Banner ad not loaded');
-      this.loadBannerAd();
-      return;
+  async hideBannerAd() {
+    try {
+      await FacebookAds.hideBannerAd();
+      console.log('Banner ad hidden');
+    } catch (error) {
+      console.error('Failed to hide banner ad:', error);
     }
-    
-    console.log('📱 Showing banner ad...');
-    
-    if (this.status.isNative && this.FacebookAds) {
-      this.FacebookAds.showBannerAd();
-    } else {
-      console.log('🎭 [SIMULATION] Banner ad would show at bottom of screen');
-    }
-  }
-
-  hideBannerAd(): void {
-    console.log('🙈 Hiding banner ad...');
-    
-    if (this.status.isNative && this.FacebookAds) {
-      this.FacebookAds.hideBannerAd();
-    } else {
-      console.log('🎭 [SIMULATION] Banner ad would hide from screen');
-    }
-  }
-
-  // Switch between test and live ads
-  setTestMode(enabled: boolean): void {
-    this.config.testMode = enabled;
-    this.status.testMode = enabled;
-    console.log('🔄 Test mode:', enabled ? 'ENABLED' : 'DISABLED');
-    this.notifyListeners();
-  }
-
-  // Force refresh ads (useful for testing)
-  async refreshAds(): Promise<void> {
-    console.log('🔄 Refreshing all ads...');
-    this.status.bannerLoaded = false;
-    this.status.interstitialLoaded = false;
-    this.notifyListeners();
-    
-    await Promise.all([
-      this.loadBannerAd(),
-      this.loadInterstitialAd()
-    ]);
-  }
-
-  getStatus(): AdStatus {
-    return { ...this.status };
-  }
-
-  onStatusChange(callback: (status: AdStatus) => void): () => void {
-    this.listeners.push(callback);
-    
-    return () => {
-      const index = this.listeners.indexOf(callback);
-      if (index > -1) {
-        this.listeners.splice(index, 1);
-      }
-    };
-  }
-
-  private notifyListeners(): void {
-    this.listeners.forEach(listener => listener(this.getStatus()));
-  }
-
-  // Enhanced test methods
-  async testBannerAd(): Promise<void> {
-    console.log('🧪 Testing banner ad...');
-    this.setTestMode(true);
-    await this.loadBannerAd();
-    this.showBannerAd();
-  }
-
-  async testInterstitialAd(): Promise<void> {
-    console.log('🧪 Testing interstitial ad...');
-    this.setTestMode(true);
-    await this.loadInterstitialAd();
-    await this.showInterstitialAd();
-  }
-
-  // Get debug info
-  getDebugInfo(): any {
-    return {
-      config: this.config,
-      status: this.status,
-      platform: this.status.isNative ? 'Native' : 'Web',
-      sdkAvailable: !!this.FacebookAds,
-      lastBidRequest: this.status.lastBidRequest?.toLocaleString()
-    };
   }
 }
 
