@@ -5,6 +5,7 @@ import { metaAudienceNetwork } from '@/services/metaAudienceNetworkService';
 export const useMetaAudienceNetwork = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState(metaAudienceNetwork.getStatus());
 
   useEffect(() => {
     const initialize = async () => {
@@ -12,6 +13,7 @@ export const useMetaAudienceNetwork = () => {
       try {
         await metaAudienceNetwork.initialize();
         setIsInitialized(true);
+        setStatus(metaAudienceNetwork.getStatus());
       } catch (error) {
         console.error('Failed to initialize Meta Audience Network:', error);
       } finally {
@@ -20,6 +22,13 @@ export const useMetaAudienceNetwork = () => {
     };
 
     initialize();
+
+    // Update status periodically
+    const interval = setInterval(() => {
+      setStatus(metaAudienceNetwork.getStatus());
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const showBannerAd = async (placementId: string) => {
@@ -55,12 +64,25 @@ export const useMetaAudienceNetwork = () => {
     }
   };
 
+  // Aliases to match what components expect
+  const showBanner = showBannerAd;
+  const hideBanner = hideBannerAd;
+  const showInterstitial = showInterstitialAd;
+  const testBanner = loadTestAd;
+  const testInterstitial = loadTestAd;
+
   return {
     isInitialized,
     isLoading,
+    status,
     showBannerAd,
     showInterstitialAd,
     loadTestAd,
-    hideBannerAd
+    hideBannerAd,
+    showBanner,
+    hideBanner,
+    showInterstitial,
+    testBanner,
+    testInterstitial
   };
 };

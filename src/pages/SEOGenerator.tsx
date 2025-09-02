@@ -15,7 +15,7 @@ export const SEOGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
   
-  const { showInterstitial } = useMetaAudienceNetwork();
+  const { showInterstitialAd } = useMetaAudienceNetwork();
 
   const handleGenerate = async () => {
     if (!topic.trim()) {
@@ -27,7 +27,7 @@ export const SEOGenerator = () => {
     
     try {
       // Show interstitial ad before generation
-      await showInterstitial();
+      await showInterstitialAd('YOUR_INTERSTITIAL_PLACEMENT_ID');
       
       const content = await cohereApi.generateCompleteSEO(topic);
       setSeoContent(content);
