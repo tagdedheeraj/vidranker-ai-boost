@@ -1,66 +1,58 @@
 
 # Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in /usr/local/Cellar/android-sdk/24.3.3/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/eff 
+# You can control the set of applied configuration files using the
+# proguardFiles setting in build.gradle.
 
-# Meta Audience Network ProGuard Rules - Essential for SDK to work
--keep class com.facebook.ads.** { *; }
--keep class com.facebook.internal.** { *; }
--keep interface com.facebook.ads.** { *; }
--dontwarn com.facebook.ads.**
--dontwarn com.facebook.internal.**
+# Keep all classes in the main package
+-keep class com.vidrankersocilet.com.** { *; }
 
-# Keep Facebook SDK Core
--keep class com.facebook.** { *; }
--dontwarn com.facebook.**
+# Google Mobile Ads SDK ProGuard rules
+-keep class com.google.android.gms.ads.** { *; }
+-keep class com.google.ads.** { *; }
+-keep class com.google.android.gms.common.** { *; }
 
-# Keep WebView JavaScript Interface
--keepclassmembers class * {
-    @android.webkit.JavascriptInterface <methods>;
-}
-
-# Keep Capacitor
+# Capacitor ProGuard rules
 -keep class com.getcapacitor.** { *; }
--keep class com.getcapacitor.annotation.** { *; }
--keepclassmembers class * {
-    @com.getcapacitor.annotation.CapacitorPlugin *;
+-keep class com.capacitorjs.plugins.** { *; }
+-keep @com.getcapacitor.annotation.CapacitorPlugin class * {
+    @com.getcapacitor.annotation.CapacitorMethod <methods>;
 }
 
-# Keep WebView JavaScript Bridge
--keepattributes JavascriptInterface
+# Keep JavaScript interface
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
 
-# Keep JSON serialization for ads
+# Keep WebView related classes
+-keep class * extends android.webkit.WebViewClient
+-keep class * extends android.webkit.WebChromeClient
+
+# AndroidX and Support Library
+-keep class androidx.** { *; }
+-keep interface androidx.** { *; }
+-dontwarn androidx.**
+
+# Gson (if used by ads SDK)
 -keepattributes Signature
 -keepattributes *Annotation*
--keep class sun.misc.Unsafe { *; }
+-dontwarn sun.misc.**
 -keep class com.google.gson.** { *; }
 
-# Keep native methods
--keepclassmembers class * {
-    native <methods>;
-}
-
-# Keep enums
--keepclassmembers enum * { *; }
-
-# Ad Network Optimization
--optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
--optimizationpasses 5
--allowaccessmodification
--dontpreverify
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
+# General Android ProGuard rules
+-keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Remove excessive logging in release builds
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
+}
