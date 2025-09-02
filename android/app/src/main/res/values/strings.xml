@@ -7,7 +7,7 @@
     
     <!-- Meta Audience Network Configuration -->
     <!-- Replace these with your actual Facebook App credentials -->
-    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_app_id">1160387479246621</string>
     <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
     
     <!-- Test Mode - Set to false for production -->
