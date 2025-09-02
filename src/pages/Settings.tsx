@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Shield, FileText, Info, Trash2, TestTube, Monitor, HelpCircle, Mail, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { useMetaAudienceNetwork } from '../hooks/useMetaAudienceNetwork';
 import { localStorage } from '../utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { metaAudienceNetwork } from '../services/metaAudienceNetworkService';
 
 interface AppSettings {
   adsEnabled: boolean;
@@ -15,7 +15,8 @@ interface AppSettings {
 export const Settings = () => {
   const navigate = useNavigate();
   const [settings, setSettings] = useState<AppSettings>({ adsEnabled: true, theme: 'light' });
-  const { showBanner, hideBanner, showInterstitial, status } = useMetaAudienceNetwork();
+  const [debugInfo, setDebugInfo] = useState<any>({});
+  const { status, showBanner, hideBanner, showInterstitial, testBanner, testInterstitial } = useMetaAudienceNetwork();
 
   useEffect(() => {
     const savedSettings = localStorage.getSettings();
@@ -25,6 +26,9 @@ export const Settings = () => {
         theme: savedSettings.theme
       });
     }
+    
+    // Get debug info
+    setDebugInfo(metaAudienceNetwork.getDebugInfo());
   }, []);
 
   const saveSettings = (newSettings: AppSettings) => {
@@ -38,26 +42,45 @@ export const Settings = () => {
     toast.success('All data cleared successfully!');
   };
 
-  const testBannerAd = () => {
-    if (settings.adsEnabled) {
-      showBanner();
-      toast.success('Banner ad displayed');
-    } else {
-      toast.error('Ads are disabled');
+  const testBannerAd = async () => {
+    console.log('🧪 Manual banner test started...');
+    try {
+      await testBanner();
+      toast.success('Banner ad test completed! Check console for details.');
+    } catch (error) {
+      toast.error('Banner ad test failed. Check console for details.');
+      console.error('Banner test error:', error);
     }
   };
 
   const testInterstitialAd = async () => {
-    if (settings.adsEnabled) {
-      try {
-        await showInterstitial();
-        toast.success('Interstitial ad displayed');
-      } catch (error) {
-        toast.error('Failed to show interstitial ad');
-      }
-    } else {
-      toast.error('Ads are disabled');
+    console.log('🧪 Manual interstitial test started...');
+    try {
+      await testInterstitial();
+      toast.success('Interstitial ad test completed! Check console for details.');
+    } catch (error) {
+      toast.error('Interstitial ad test failed. Check console for details.');
+      console.error('Interstitial test error:', error);
     }
+  };
+
+  const refreshAllAds = async () => {
+    console.log('🔄 Refreshing all ads...');
+    try {
+      await metaAudienceNetwork.refreshAds();
+      setDebugInfo(metaAudienceNetwork.getDebugInfo());
+      toast.success('Ads refreshed successfully!');
+    } catch (error) {
+      toast.error('Failed to refresh ads');
+      console.error('Refresh error:', error);
+    }
+  };
+
+  const toggleTestMode = () => {
+    const newTestMode = !status.testMode;
+    metaAudienceNetwork.setTestMode(newTestMode);
+    setDebugInfo(metaAudienceNetwork.getDebugInfo());
+    toast.success(`Test mode ${newTestMode ? 'enabled' : 'disabled'}`);
   };
 
   const supportItems = [
@@ -110,8 +133,130 @@ export const Settings = () => {
         </div>
         <h1 className="text-xl font-bold mb-2">Settings</h1>
         <p className="text-sm text-muted-foreground">
-          Manage your app preferences and settings
+          Manage your app preferences and ad settings
         </p>
+      </div>
+
+      {/* Meta Audience Network Status */}
+      <div className="card-glass">
+        <h2 className="font-semibold mb-4 flex items-center gap-2">
+          <Monitor className="h-5 w-5 text-primary" />
+          Meta Audience Network Status
+        </h2>
+        
+        <div className="space-y-3">
+          <div className="flex justify-between items-center p-3 glass rounded-lg">
+            <span className="text-sm">SDK Status</span>
+            <span className={`text-xs px-2 py-1 rounded-full ${
+              status.isInitialized ? 'bg-green-500/20 text-green-600' : 'bg-red-500/20 text-red-600'
+            }`}>
+              {status.isInitialized ? '✅ Initialized' : '❌ Not Ready'}
+            </span>
+          </div>
+          
+          <div className="flex justify-between items-center p-3 glass rounded-lg">
+            <span className="text-sm">Platform</span>
+            <span className="text-xs text-muted-foreground">
+              {status.isNative ? '📱 Native App' : '🌐 Web Browser'}
+            </span>
+          </div>
+          
+          <div className="flex justify-between items-center p-3 glass rounded-lg">
+            <span className="text-sm">Test Mode</span>
+            <span className={`text-xs px-2 py-1 rounded-full ${
+              status.testMode ? 'bg-orange-500/20 text-orange-600' : 'bg-blue-500/20 text-blue-600'
+            }`}>
+              {status.testMode ? '🧪 Test Ads' : '🎯 Live Ads'}
+            </span>
+          </div>
+          
+          <div className="flex justify-between items-center p-3 glass rounded-lg">
+            <span className="text-sm">Banner Status</span>
+            <span className={`text-xs px-2 py-1 rounded-full ${
+              status.bannerLoaded ? 'bg-green-500/20 text-green-600' : 'bg-gray-500/20 text-gray-600'
+            }`}>
+              {status.bannerLoaded ? '✅ Loaded' : '⏳ Loading...'}
+            </span>
+          </div>
+          
+          <div className="flex justify-between items-center p-3 glass rounded-lg">
+            <span className="text-sm">Interstitial Status</span>
+            <span className={`text-xs px-2 py-1 rounded-full ${
+              status.interstitialLoaded ? 'bg-green-500/20 text-green-600' : 'bg-gray-500/20 text-gray-600'
+            }`}>
+              {status.interstitialLoaded ? '✅ Ready' : '⏳ Loading...'}
+            </span>
+          </div>
+
+          {debugInfo.lastBidRequest && (
+            <div className="flex justify-between items-center p-3 glass rounded-lg">
+              <span className="text-sm">Last Bid Request</span>
+              <span className="text-xs text-muted-foreground">
+                {debugInfo.lastBidRequest}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Ad Testing Controls */}
+      <div className="card-glass">
+        <h2 className="font-semibold mb-4 flex items-center gap-2">
+          <TestTube className="h-5 w-5 text-orange-500" />
+          Ad Testing & Controls
+        </h2>
+        
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              onClick={testBannerAd}
+              variant="outline" 
+              className="btn-secondary"
+              disabled={!settings.adsEnabled}
+            >
+              🧪 Test Banner
+            </Button>
+            
+            <Button 
+              onClick={testInterstitialAd}
+              variant="outline" 
+              className="btn-secondary"
+              disabled={!settings.adsEnabled}
+            >
+              🧪 Test Interstitial
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              onClick={toggleTestMode}
+              variant="outline" 
+              className="btn-secondary"
+            >
+              {status.testMode ? '🎯 Enable Live' : '🧪 Enable Test'}
+            </Button>
+            
+            <Button 
+              onClick={refreshAllAds}
+              variant="outline" 
+              className="btn-secondary"
+            >
+              🔄 Refresh Ads
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-4 p-3 bg-blue-500/10 rounded-lg">
+          <p className="text-xs text-blue-600 mb-2">
+            📊 <strong>Testing Guide:</strong>
+          </p>
+          <ul className="text-xs text-blue-600 space-y-1">
+            <li>• Test ads confirm bid requests are working</li>
+            <li>• Check console logs for detailed information</li>
+            <li>• Switch to live mode when ready for production</li>
+            <li>• Refresh ads if "Waiting for bid request" persists</li>
+          </ul>
+        </div>
       </div>
 
       {/* App Status */}
@@ -180,34 +325,6 @@ export const Settings = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Ad Testing (Developer Mode) */}
-      <div className="card-glass">
-        <h2 className="font-semibold mb-4 flex items-center gap-2">
-          <TestTube className="h-5 w-5 text-orange-500" />
-          Developer Tools
-        </h2>
-        
-        <div className="grid grid-cols-2 gap-3">
-          <Button 
-            onClick={testBannerAd}
-            variant="outline" 
-            className="btn-secondary"
-            disabled={!settings.adsEnabled}
-          >
-            Test Banner
-          </Button>
-          
-          <Button 
-            onClick={testInterstitialAd}
-            variant="outline" 
-            className="btn-secondary"
-            disabled={!settings.adsEnabled}
-          >
-            Test Interstitial
-          </Button>
-        </div>
       </div>
 
       {/* Data Management */}

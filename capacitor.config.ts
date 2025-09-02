@@ -14,6 +14,12 @@ const config: CapacitorConfig = {
       backgroundColor: "#1e3a8a",
       showSpinner: true,
       spinnerColor: "#8b5cf6"
+    },
+    FacebookAds: {
+      appId: "1160387479246621",
+      testMode: true,
+      testDeviceIds: ["YOUR_TEST_DEVICE_ID"],
+      logLevel: "verbose"
     }
   }
 };
