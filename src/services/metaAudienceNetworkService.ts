@@ -1,23 +1,31 @@
+
 interface AdStatus {
   isInitialized: boolean;
   isNative: boolean;
   testMode: boolean;
   bannerLoaded: boolean;
   interstitialLoaded: boolean;
+  sdkVersion?: string;
+  error?: string;
 }
 
 interface DebugInfo {
   lastBidRequest?: string;
   adRequests: number;
   errors: string[];
+  initAttempts: number;
+  lastError?: string;
 }
 
 class MetaAudienceNetworkService {
   private isInitialized = false;
   private testMode = true;
+  private initializationAttempts = 0;
+  private maxRetries = 3;
   private debugInfo: DebugInfo = {
     adRequests: 0,
-    errors: []
+    errors: [],
+    initAttempts: 0
   };
   private status: AdStatus = {
     isInitialized: false,
@@ -27,14 +35,14 @@ class MetaAudienceNetworkService {
     interstitialLoaded: false
   };
 
-  // Test Placement IDs - Meta के official test IDs
+  // Meta के official test placement IDs
   private readonly TEST_PLACEMENT_IDS = {
     banner: 'IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID',
     interstitial: 'VID_HD_16_9_46S_APP_INSTALL#YOUR_PLACEMENT_ID',
     native: 'CAROUSEL_IMG_SQUARE_APP_INSTALL#YOUR_PLACEMENT_ID'
   };
 
-  // Real Placement IDs - यहाँ आपके real IDs आएंगे
+  // Real placement IDs - यहाँ आपके real IDs आएंगे
   private readonly LIVE_PLACEMENT_IDS = {
     banner: 'YOUR_REAL_BANNER_PLACEMENT_ID',
     interstitial: 'YOUR_REAL_INTERSTITIAL_PLACEMENT_ID',
@@ -48,37 +56,104 @@ class MetaAudienceNetworkService {
     return this.LIVE_PLACEMENT_IDS[adType];
   }
 
-  async initialize() {
+  private isCapacitorNative(): boolean {
+    return typeof window !== 'undefined' && 'Capacitor' in window;
+  }
+
+  async initialize(): Promise<boolean> {
+    if (this.isInitialized) {
+      console.log('✅ Meta Audience Network already initialized');
+      return true;
+    }
+
+    this.initializationAttempts++;
+    this.debugInfo.initAttempts = this.initializationAttempts;
+
     try {
-      console.log('🚀 Initializing Meta Audience Network...');
+      console.log(`🚀 Initializing Meta Audience Network (Attempt ${this.initializationAttempts}/${this.maxRetries})...`);
       
-      // Simulate initialization delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Check if running in native environment
+      this.status.isNative = this.isCapacitorNative();
+      
+      if (this.status.isNative) {
+        // Native implementation would use actual SDK
+        console.log('📱 Running in native environment');
+        
+        // In actual implementation, this would be:
+        // await FacebookAds.initialize();
+        // For now, simulate initialization
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+      } else {
+        console.log('🌐 Running in web browser - using simulation mode');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
       
       this.isInitialized = true;
       this.status.isInitialized = true;
-      this.status.isNative = typeof window !== 'undefined' && 'Capacitor' in window;
+      this.status.testMode = this.testMode;
+      this.status.sdkVersion = '6.15.0';
       
       console.log('✅ Meta Audience Network initialized successfully');
-      console.log('📱 Platform:', this.status.isNative ? 'Native App' : 'Web Browser');
-      console.log('🧪 Test Mode:', this.testMode ? 'Enabled' : 'Disabled');
+      console.log(`📱 Platform: ${this.status.isNative ? 'Native App' : 'Web Browser'}`);
+      console.log(`🧪 Test Mode: ${this.testMode ? 'Enabled' : 'Disabled'}`);
       
-      // Simulate loading ads
+      // Preload ads after successful initialization
       setTimeout(() => {
-        this.status.bannerLoaded = true;
-        this.status.interstitialLoaded = true;
-        console.log('📢 Ads loaded and ready');
-      }, 2000);
+        this.preloadAds();
+      }, 1000);
+      
+      return true;
       
     } catch (error) {
+      const errorMessage = `Init failed: ${error}`;
       console.error('❌ Failed to initialize Meta Audience Network:', error);
-      this.debugInfo.errors.push(`Init failed: ${error}`);
+      
+      this.debugInfo.errors.push(errorMessage);
+      this.debugInfo.lastError = errorMessage;
+      this.status.error = errorMessage;
+      
+      // Retry logic
+      if (this.initializationAttempts < this.maxRetries) {
+        console.log(`🔄 Retrying initialization in 2 seconds...`);
+        setTimeout(() => {
+          this.initialize();
+        }, 2000);
+      } else {
+        console.error('❌ Max initialization attempts reached. Using fallback mode.');
+        this.status.error = 'Max init attempts reached';
+      }
+      
+      return false;
+    }
+  }
+
+  private async preloadAds() {
+    try {
+      console.log('🔄 Preloading ads...');
+      
+      // Simulate ad loading
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      this.status.bannerLoaded = true;
+      this.status.interstitialLoaded = true;
+      
+      console.log('📢 Ads preloaded successfully');
+      
+    } catch (error) {
+      console.error('⚠️ Failed to preload ads:', error);
+      this.debugInfo.errors.push(`Preload failed: ${error}`);
     }
   }
 
   async showBannerAd(placementId?: string) {
     if (!this.isInitialized) {
-      await this.initialize();
+      console.log('🔄 SDK not initialized, initializing now...');
+      const initSuccess = await this.initialize();
+      if (!initSuccess) {
+        console.error('❌ Cannot show banner ad: Initialization failed');
+        return;
+      }
     }
 
     try {
@@ -89,7 +164,8 @@ class MetaAudienceNetworkService {
       this.debugInfo.lastBidRequest = new Date().toLocaleTimeString();
       
       if (this.status.isNative) {
-        // Native ad implementation would go here
+        // Native implementation would be:
+        // await FacebookAds.showBannerAd({ placementId: finalPlacementId });
         console.log('📱 Native banner ad displayed');
       } else {
         console.log('🌐 Web banner ad simulation - placement:', finalPlacementId);
@@ -97,19 +173,23 @@ class MetaAudienceNetworkService {
       }
       
       console.log('✅ Banner ad displayed successfully');
-      
-      // Simulate ad load success
       this.status.bannerLoaded = true;
       
     } catch (error) {
+      const errorMessage = `Banner failed: ${error}`;
       console.error('❌ Failed to show banner ad:', error);
-      this.debugInfo.errors.push(`Banner failed: ${error}`);
+      this.debugInfo.errors.push(errorMessage);
     }
   }
 
   async showInterstitialAd(placementId?: string) {
     if (!this.isInitialized) {
-      await this.initialize();
+      console.log('🔄 SDK not initialized, initializing now...');
+      const initSuccess = await this.initialize();
+      if (!initSuccess) {
+        console.error('❌ Cannot show interstitial ad: Initialization failed');
+        return;
+      }
     }
 
     try {
@@ -120,24 +200,22 @@ class MetaAudienceNetworkService {
       this.debugInfo.lastBidRequest = new Date().toLocaleTimeString();
       
       if (this.status.isNative) {
-        // Native ad implementation would go here
+        // Native implementation would be:
+        // await FacebookAds.showInterstitialAd({ placementId: finalPlacementId });
         console.log('📱 Native interstitial ad displayed');
       } else {
         console.log('🌐 Web interstitial ad simulation - placement:', finalPlacementId);
         console.log('💡 In native app, this would show real ads');
-        
-        // Simulate interstitial display with a modal-like effect
         console.log('🎬 Interstitial ad would cover full screen here');
       }
       
       console.log('✅ Interstitial ad displayed successfully');
-      
-      // Simulate ad load success
       this.status.interstitialLoaded = true;
       
     } catch (error) {
+      const errorMessage = `Interstitial failed: ${error}`;
       console.error('❌ Failed to show interstitial ad:', error);
-      this.debugInfo.errors.push(`Interstitial failed: ${error}`);
+      this.debugInfo.errors.push(errorMessage);
     }
   }
 
@@ -145,13 +223,19 @@ class MetaAudienceNetworkService {
     try {
       console.log('🧪 Loading test ad...');
       
-      // Use test placement ID
+      // Force test mode for this operation
+      const originalTestMode = this.testMode;
+      this.testMode = true;
+      
       const testPlacementId = this.TEST_PLACEMENT_IDS.banner;
-      
       await this.showBannerAd(testPlacementId);
-      console.log('✅ Test ad loaded successfully');
       
+      // Restore original test mode
+      this.testMode = originalTestMode;
+      
+      console.log('✅ Test ad loaded successfully');
       return true;
+      
     } catch (error) {
       console.error('❌ Failed to load test ad:', error);
       this.debugInfo.errors.push(`Test ad failed: ${error}`);
@@ -164,7 +248,8 @@ class MetaAudienceNetworkService {
       console.log('🚫 Hiding banner ad...');
       
       if (this.status.isNative) {
-        // Native hide implementation would go here
+        // Native implementation would be:
+        // await FacebookAds.hideBannerAd();
         console.log('📱 Native banner ad hidden');
       } else {
         console.log('🌐 Web banner ad hidden (simulation)');
@@ -182,29 +267,37 @@ class MetaAudienceNetworkService {
     this.status.bannerLoaded = false;
     this.status.interstitialLoaded = false;
     
-    // Simulate refresh delay
-    setTimeout(() => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       this.status.bannerLoaded = true;
       this.status.interstitialLoaded = true;
+      
       console.log('✅ Ads refreshed successfully');
-    }, 1500);
+    } catch (error) {
+      console.error('❌ Failed to refresh ads:', error);
+      this.debugInfo.errors.push(`Refresh failed: ${error}`);
+    }
   }
 
   setTestMode(enabled: boolean) {
     this.testMode = enabled;
     this.status.testMode = enabled;
     console.log(`🧪 Test mode ${enabled ? 'enabled' : 'disabled'}`);
+    
+    // Refresh ads after mode change
+    setTimeout(() => {
+      this.refreshAds();
+    }, 500);
   }
 
   switchToLiveAds() {
-    this.testMode = false;
-    this.status.testMode = false;
+    this.setTestMode(false);
     console.log('🎯 Switched to live ads - using real placement IDs');
   }
 
   switchToTestAds() {
-    this.testMode = true;
-    this.status.testMode = true;
+    this.setTestMode(true);
     console.log('🧪 Switched to test ads - using test placement IDs');
   }
 
@@ -212,7 +305,11 @@ class MetaAudienceNetworkService {
     (this.LIVE_PLACEMENT_IDS as any).banner = bannerID;
     (this.LIVE_PLACEMENT_IDS as any).interstitial = interstitialID;
     (this.LIVE_PLACEMENT_IDS as any).native = nativeID;
-    console.log('🔄 Live placement IDs updated');
+    console.log('🔄 Live placement IDs updated:', {
+      banner: bannerID,
+      interstitial: interstitialID,
+      native: nativeID
+    });
   }
 
   getStatus(): AdStatus {
@@ -221,6 +318,35 @@ class MetaAudienceNetworkService {
 
   getDebugInfo(): DebugInfo {
     return { ...this.debugInfo };
+  }
+
+  // Health check method for debugging
+  async performHealthCheck(): Promise<boolean> {
+    console.log('🩺 Performing Meta Audience Network health check...');
+    
+    try {
+      const healthStatus = {
+        sdkInitialized: this.isInitialized,
+        platform: this.status.isNative ? 'native' : 'web',
+        testMode: this.testMode,
+        adsLoaded: this.status.bannerLoaded && this.status.interstitialLoaded,
+        errors: this.debugInfo.errors.length,
+        lastError: this.debugInfo.lastError
+      };
+      
+      console.log('📊 Health check results:', healthStatus);
+      
+      if (!this.isInitialized) {
+        console.log('🔄 SDK not initialized, attempting initialization...');
+        return await this.initialize();
+      }
+      
+      return true;
+      
+    } catch (error) {
+      console.error('❌ Health check failed:', error);
+      return false;
+    }
   }
 }
 

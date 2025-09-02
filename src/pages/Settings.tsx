@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { metaAudienceNetwork } from '../services/metaAudienceNetworkService';
 import { useAds } from '@/hooks/useAds';
 import { BannerAd } from '@/components/ads/BannerAd';
+import { AdDebugPanel } from '@/components/ads/AdDebugPanel';
 
 interface AppSettings {
   adsEnabled: boolean;
@@ -146,6 +147,11 @@ export const Settings = () => {
             Manage your app preferences and ad settings
           </p>
         </div>
+
+        {/* Debug Panel - Only show in development or when there are issues */}
+        {(!status.isInitialized || debugInfo.errors?.length > 0) && (
+          <AdDebugPanel />
+        )}
 
         {/* Meta Audience Network Status */}
         <div className="card-glass">

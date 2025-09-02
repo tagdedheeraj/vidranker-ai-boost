@@ -6,7 +6,15 @@ const config: CapacitorConfig = {
   appName: 'VidRanker',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    cleartext: true
+  },
+  android: {
+    buildOptions: {
+      keystorePath: undefined,
+      keystoreAlias: undefined,
+      releaseType: 'APK'
+    }
   },
   plugins: {
     SplashScreen: {
@@ -14,6 +22,12 @@ const config: CapacitorConfig = {
       backgroundColor: "#1e3a8a",
       showSpinner: true,
       spinnerColor: "#8b5cf6"
+    },
+    CapacitorCookies: {
+      enabled: true
+    },
+    CapacitorHttp: {
+      enabled: true
     }
   }
 };
