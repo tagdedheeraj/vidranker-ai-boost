@@ -266,6 +266,56 @@ class MetaAudienceNetworkService {
     }
   }
 
+  async loadTestAd(): Promise<boolean> {
+    try {
+      console.log('🧪 Loading test ad...');
+      
+      if (!this.isInitialized) {
+        console.log('🔄 SDK not initialized, initializing now...');
+        const initSuccess = await this.initialize();
+        if (!initSuccess) {
+          console.error('❌ Cannot load test ad: Initialization failed');
+          return false;
+        }
+      }
+
+      // Force test mode for this operation
+      const originalTestMode = this.testMode;
+      this.testMode = true;
+      
+      this.debugInfo.adRequests++;
+      this.debugInfo.lastBidRequest = new Date().toLocaleTimeString();
+      
+      if (this.status.isNative) {
+        // Native implementation
+        const { FacebookAds } = (window as any).Capacitor.Plugins;
+        const result = await FacebookAds.loadTestAd({ 
+          placementId: this.getPlacementId('banner')
+        });
+        
+        if (result.success) {
+          console.log('📱 Native test ad loaded successfully');
+          this.testMode = originalTestMode;
+          return true;
+        } else {
+          throw new Error(result.error || 'Failed to load test ad');
+        }
+      } else {
+        console.log('🌐 Web test ad simulation');
+        console.log('💡 Test ad would load here in native app');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        this.testMode = originalTestMode;
+        return true;
+      }
+      
+    } catch (error) {
+      const errorMessage = `Test ad failed: ${error}`;
+      console.error('❌ Failed to load test ad:', error);
+      this.debugInfo.errors.push(errorMessage);
+      return false;
+    }
+  }
+
   async refreshAds() {
     console.log('🔄 Refreshing all ads...');
     this.status.bannerLoaded = false;
