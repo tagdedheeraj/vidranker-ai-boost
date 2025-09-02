@@ -7,7 +7,9 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     androidScheme: 'https',
-    cleartext: true
+    cleartext: true,
+    // Remove URL for production build
+    url: undefined
   },
   android: {
     buildOptions: {
@@ -28,6 +30,10 @@ const config: CapacitorConfig = {
     },
     CapacitorHttp: {
       enabled: true
+    },
+    FacebookAds: {
+      testMode: true,
+      logLevel: 'debug'
     }
   }
 };

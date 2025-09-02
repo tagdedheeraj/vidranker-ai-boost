@@ -1,5 +1,4 @@
 
-<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">VidRanker</string>
     <string name="title_activity_main">VidRanker</string>
@@ -7,8 +6,10 @@
     <string name="custom_url_scheme">com.vidrankersocilet.com</string>
     
     <!-- Meta Audience Network Configuration -->
-    <!-- Replace with your actual Facebook App ID -->
+    <!-- Replace these with your actual Facebook App credentials -->
     <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
-    <!-- Replace with your actual Facebook Client Token -->
     <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
+    
+    <!-- Test Mode - Set to false for production -->
+    <string name="fb_ad_test_mode">true</string>
 </resources>
