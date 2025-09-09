@@ -7,6 +7,7 @@ import com.getcapacitor.BridgeActivity;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.facebook.ads.AudienceNetworkAds;
 
 public class MainActivity extends BridgeActivity {
     
@@ -18,6 +19,9 @@ public class MainActivity extends BridgeActivity {
         
         // Initialize Mobile Ads SDK with proper error handling
         initializeMobileAds();
+        
+        // Initialize Meta Audience Network
+        initializeMetaAudienceNetwork();
         
         // Register the FacebookAds plugin for Capacitor
         registerPlugin(FacebookAdsPlugin.class);
@@ -37,6 +41,26 @@ public class MainActivity extends BridgeActivity {
             
         } catch (Exception e) {
             Log.e(TAG, "❌ Failed to initialize Google Mobile Ads SDK: " + e.getMessage());
+        }
+    }
+
+    private void initializeMetaAudienceNetwork() {
+        try {
+            Log.d(TAG, "🚀 Initializing Meta Audience Network SDK...");
+            
+            AudienceNetworkAds
+                .buildInitSettings(this)
+                .withInitListener(result -> {
+                    if (result.isSuccess()) {
+                        Log.d(TAG, "✅ Meta Audience Network initialized successfully");
+                    } else {
+                        Log.e(TAG, "❌ Meta Audience Network initialization failed: " + result.getMessage());
+                    }
+                })
+                .initialize();
+                
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Failed to initialize Meta Audience Network SDK: " + e.getMessage());
         }
     }
 

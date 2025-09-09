@@ -64,6 +64,9 @@ dependencies {
     // Google Mobile Ads SDK - Latest stable version
     implementation 'com.google.android.gms:play-services-ads:23.1.0'
     
+    // Meta Audience Network SDK - Latest stable version
+    implementation 'com.facebook.android:audience-network-sdk:6.17.0'
+    
     // Required for ads to work properly
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.lifecycle:lifecycle-process:2.7.0'
